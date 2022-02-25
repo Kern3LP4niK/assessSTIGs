@@ -1,1 +1,2 @@
 # assessSTIGs
+#Run assessSTIGsRun.bash
