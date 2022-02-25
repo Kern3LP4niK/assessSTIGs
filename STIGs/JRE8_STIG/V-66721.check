@@ -1,0 +1,18 @@
+#!/bin/bash
+vulID='66721'
+createOutputFile
+
+(
+	echo 'ls -l /etc/.java/deployment/deployment.config'
+	ls -l /etc/.java/deployment/deployment.config 2>&1
+
+) > $checkOutput/raw/V-$vulID.out
+
+if [[ -f "/etc/.java/deployment/deployment.config" ]]
+then
+	printf "NotAFinding" > $checkOutput/raw/V-$vulID.status
+else
+	printf "Open" > $checkOutput/raw/V-$vulID.status
+fi
+
+compileChecklist

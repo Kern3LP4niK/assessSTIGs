@@ -1,0 +1,16 @@
+#!/bin/bash
+vulID='66935'
+createOutputFile
+
+(
+	echo 'rpm -qa | grep -i "jre\|jdk\|java" | sort'
+	rpm -qa | grep -i "jre\|jdk\|java" | sort
+	echo
+	echo ' ps -ef | grep -i "jre\|jdk\|java"'
+	ps -ef | grep -i "jre\|jdk\|java"
+
+) > $checkOutput/raw/V-$vulID.out
+
+printf "Not_Reviewed" > $checkOutput/raw/V-$vulID.status
+
+compileChecklist

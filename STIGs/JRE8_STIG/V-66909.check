@@ -1,0 +1,34 @@
+#!/bin/bash
+vulID='66909'
+createOutputFile
+
+
+(
+	echo 'grep "deployment.system.config=" /etc/.java/deployment/deployment.config '
+	grep "deployment.system.config=" /etc/.java/deployment/deployment.config 
+#| grep -v "mandatory" | grep -v "^#" | cut -d= -f2
+	echo
+	echo 'ls -l $(grep "deployment.system.config=" /etc/.java/deployment/deployment.config | grep -v "^#" | cut -d= -f2)'
+	ls -l $(grep "deployment.system.config=" /etc/.java/deployment/deployment.config | grep -v "^#" | cut -d= -f2) 2>&1
+	echo
+	echo 'grep "deployment.system.config.mandatory=" /etc/.java/deployment/deployment.config '
+	grep "deployment.system.config.mandatory=" /etc/.java/deployment/deployment.config 
+#| grep -v "^#" | cut -d= -f2
+
+
+) > $checkOutput/raw/V-$vulID.out
+
+deployment_system_config=$(grep 'deployment.system.config=' /etc/.java/deployment/deployment.config | grep -v "^#" | cut -d= -f2)
+
+deployment_system_config_mandatory=$(grep "deployment.system.config.mandatory=" /etc/.java/deployment/deployment.config | grep -v "^#" | cut -d= -f2)
+
+if 	[[ -n "$deployment_system_config" ]] && \
+	[[ -f "$deployment_system_config" ]] && \
+	[[ "$deployment_system_config_mandatory" == "true" ]]
+then
+	printf "NotAFinding" > $checkOutput/raw/V-$vulID.status
+else				
+	printf "Open" > $checkOutput/raw/V-$vulID.status
+fi
+
+compileChecklist

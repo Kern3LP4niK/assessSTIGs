@@ -1,0 +1,29 @@
+#!/bin/bash
+vulID='66929'
+createOutputFile
+
+deployment_system_config=$(grep 'deployment.system.config=' /etc/.java/deployment/deployment.config | grep -v "^#" | cut -d= -f2)
+
+setting='deployment.security.validation.crl'
+expected_value='true'
+
+(
+
+	echo "grep -v \"^#\" \"$deployment_system_config\" | grep \"$setting\""
+	grep -v "^#" "$deployment_system_config" | grep "$setting"
+
+
+) > $checkOutput/raw/V-$vulID.out
+
+#setting_value=$(grep  "$setting=" $deployment_system_config | grep -v '^#\|lock' | cut -d= -f2)
+setting_value="$(grep -v '^#' "$deployment_system_config" | grep "$setting=" | cut -d= -f2)"
+setting_lock="$(grep -v '^#' "$deployment_system_config" | grep "$setting.lock")"
+
+if	[[ "$setting_value" == "$expected_value" ]] && [[ -n $setting_lock ]]
+then
+	printf "NotAFinding" > $checkOutput/raw/V-$vulID.status
+else				
+	printf "Open" > $checkOutput/raw/V-$vulID.status
+fi
+
+compileChecklist

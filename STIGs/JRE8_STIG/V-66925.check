@@ -1,0 +1,27 @@
+#!/bin/bash
+vulID='66925'
+createOutputFile
+
+deployment_system_config=$(grep 'deployment.system.config=' /etc/.java/deployment/deployment.config | grep -v "^#" | cut -d= -f2)
+
+setting='deployment.user.security.exception.sites'
+
+(
+
+	echo "ls -l $(grep -v '^#' "$deployment_system_config" | grep "$setting" | cut -d= -f2)"
+	ls -l "$(grep -v '^#' "$deployment_system_config" | grep "$setting" | cut -d= -f2)"
+
+
+) > $checkOutput/raw/V-$vulID.out
+
+#setting_value=$(grep  "$setting=" $deployment_system_config | grep -v '^#\|lock' | cut -d= -f2)
+setting_value="$(grep -v '^#' "$deployment_system_config" | grep "$setting=" | cut -d= -f2)"
+
+if	[[ -f "$setting_value" ]] && [[ -n "$setting_value" ]]
+then
+	printf "NotAFinding" > $checkOutput/raw/V-$vulID.status
+else				
+	printf "Open" > $checkOutput/raw/V-$vulID.status
+fi
+
+compileChecklist

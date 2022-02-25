@@ -1,0 +1,20 @@
+#!/bin/bash
+vulID='66911'
+createOutputFile
+
+deployment_system_config=$(grep 'deployment.system.config=' /etc/.java/deployment/deployment.config | grep -v "^#" | cut -d= -f2)
+
+(
+	echo "# ls -l $deployment_system_config"
+	ls -l "$deployment_system_config"
+
+) > $checkOutput/raw/V-$vulID.out
+
+if [[ -f "$deployment_system_config" ]]
+then
+	printf "NotAFinding" > $checkOutput/raw/V-$vulID.status
+else				
+	printf "Open" > $checkOutput/raw/V-$vulID.status
+fi
+
+compileChecklist
